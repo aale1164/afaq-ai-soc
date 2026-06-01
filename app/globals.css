@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system_ui, sans-serif;
+  }
+  
+  body {
+    background-color: #0A0A0A;
+    color: #E4E4E7;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Security Style Enhancements */
+@layer components {
+  .security-card {
+    background-color: #111111;
+    border: 1px solid #27272A;
+    transition: all 0.2s ease;
+  }
+  
+  .security-card:hover {
+    border-color: #3F3F46;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+  }
+}
