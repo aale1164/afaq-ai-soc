@@ -120,8 +120,9 @@ export default function AfaqEnterpriseSOC() {
     setIsAudioMuted(true); 
   };
 
+  // Panel adapted for responsive heights
   const Panel = ({ title, action = null, children, className = "" }: any) => (
-    <div className={`bg-[#0C1017] border border-[#1C2230] rounded flex flex-col min-h-0 shadow-sm relative overflow-hidden ${className}`}>
+    <div className={`bg-[#0C1017] border border-[#1C2230] rounded flex flex-col min-h-[250px] lg:min-h-0 shadow-sm relative overflow-hidden ${className}`}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#1C2230] bg-[#0F131C] shrink-0 z-10">
         <h3 className="text-[10px] font-bold text-slate-300 uppercase tracking-wider font-english">{title}</h3>
         {action}
@@ -133,7 +134,7 @@ export default function AfaqEnterpriseSOC() {
   );
 
   return (
-    <div dir="rtl" className="h-screen w-full bg-[#05070A] text-slate-300 flex flex-col overflow-hidden select-none font-arabic">
+    <div dir="rtl" className="min-h-screen lg:h-screen w-full max-w-full overflow-x-hidden bg-[#05070A] text-slate-300 flex flex-col select-none font-arabic">
       
       {/* Global Realism Styles */}
       <style dangerouslySetInnerHTML={{__html: `
@@ -158,51 +159,52 @@ export default function AfaqEnterpriseSOC() {
         }
       `}} />
 
-      {/* --- TOPBAR --- */}
-      <header className="h-[48px] bg-[#0C1017] border-b border-[#1C2230] px-4 flex items-center justify-between shrink-0 shadow-md z-30">
-        <div className="flex items-center gap-4 text-[10px] font-english font-medium">
-          <div className="flex items-center gap-1.5 text-slate-200 font-orbitron w-[85px]">
-            <Clock className="w-3.5 h-3.5 text-slate-500" />
+      {/* --- RESPONSIVE TOPBAR --- */}
+      <header className="h-auto min-h-[48px] lg:h-[48px] bg-[#0C1017] border-b border-[#1C2230] p-3 lg:px-4 flex flex-col lg:flex-row items-center justify-between shrink-0 shadow-md z-30 gap-3 lg:gap-0">
+        
+        <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-english font-medium w-full lg:w-auto">
+          <div className="flex items-center gap-1.5 text-slate-200 font-orbitron w-auto lg:w-[85px]">
+            <Clock className="w-3.5 h-3.5 text-slate-500 hidden sm:block" />
             {currentTime.toLocaleTimeString([], { hour12: false })}
           </div>
-          <div className="w-px h-4 bg-[#1C2230]" />
+          <div className="hidden sm:block w-px h-4 bg-[#1C2230]" />
           <button onClick={handleSimulateAI} className={`text-[9px] font-bold px-3 py-1.5 rounded transition-all duration-300 border ${sysState === 'ESCALATED' ? 'bg-red-500/10 text-red-400 border-red-500/30 ring-1 ring-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'bg-[#121722] text-slate-300 border-[#1C2230] hover:bg-[#1C2230] hover:text-white'}`}>
             {sysState === 'ESCALATED' ? 'RESOLVE THREATS' : 'SIMULATE ESCALATION'}
           </button>
         </div>
 
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-[14px] font-orbitron font-bold text-white tracking-widest flex items-center gap-2">
-            <Server className="w-4 h-4 text-slate-500" /> AFAQ-AI-SOC-01
+        <div className="flex flex-col items-center justify-center w-full lg:w-auto order-first lg:order-none">
+          <div className="text-[12px] sm:text-[14px] font-orbitron font-bold text-white tracking-widest flex items-center gap-2">
+            <Server className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500" /> AFAQ-AI-SOC-01
           </div>
-          <div className="text-[8px] font-english text-emerald-500 tracking-widest uppercase">{SESSION.node}</div>
+          <div className="text-[7px] sm:text-[8px] font-english text-emerald-500 tracking-widest uppercase">{SESSION.node}</div>
         </div>
 
-        <div className="flex items-center gap-4 text-[10px] font-english font-medium">
-          <div className="flex items-center gap-1.5 text-emerald-400">
-            <ShieldCheck className="w-3.5 h-3.5" /> SECURE SESSION
+        <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-english font-medium w-full lg:w-auto">
+          <div className="hidden sm:flex items-center gap-1.5 text-emerald-400">
+            <ShieldCheck className="w-3.5 h-3.5" /> SECURE
           </div>
           <div className="flex items-center gap-2 bg-[#121722] border border-[#1C2230] px-2 py-1 rounded">
-            <span className="text-slate-400">ACTIVE INCIDENTS</span>
+            <span className="text-slate-400">INCIDENTS</span>
             <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${sysState === 'ESCALATED' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-700 text-slate-300'}`}>
               {sysState === 'ESCALATED' ? '01' : '00'}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 text-slate-300 border-l border-[#1C2230] pl-4">
+          <div className="flex items-center gap-1.5 text-slate-300 sm:border-l border-[#1C2230] sm:pl-3">
             <User className="w-3.5 h-3.5 text-slate-500" />
             <div className="flex flex-col leading-none">
-              <span>{SESSION.user}</span>
-              <span className="text-[8px] text-blue-400">{SESSION.role}</span>
+              <span className="text-[9px] sm:text-[10px]">{SESSION.user}</span>
+              <span className="text-[7px] sm:text-[8px] text-blue-400">{SESSION.role}</span>
             </div>
           </div>
         </div>
       </header>
 
-      {/* --- MAIN WORKSPACE --- */}
-      <main className="flex-1 flex gap-2.5 p-2.5 overflow-hidden min-h-0 bg-[#020305]">
+      {/* --- RESPONSIVE MAIN WORKSPACE --- */}
+      <main className="flex-1 flex flex-col lg:flex-row gap-2.5 p-2.5 overflow-x-hidden overflow-y-auto lg:overflow-hidden min-h-0 bg-[#020305]">
         
         {/* --- LEFT PANEL: AI INTELLIGENCE --- */}
-        <aside className="w-[260px] shrink-0 flex flex-col gap-2.5 min-h-0">
+        <aside className="w-full lg:w-[260px] shrink-0 flex flex-col gap-2.5 h-auto lg:h-full lg:min-h-0">
           <Panel title="AI Threat Score" action={<Activity className="w-3.5 h-3.5 text-emerald-500" />}>
             <div className="flex items-center gap-4 p-2">
               <div className="relative w-16 h-16 flex items-center justify-center shrink-0">
@@ -227,7 +229,7 @@ export default function AfaqEnterpriseSOC() {
             </div>
           </Panel>
 
-          <Panel title="AI Recommendations" className="flex-1">
+          <Panel title="AI Recommendations" className="flex-1 min-h-[150px] lg:min-h-0">
             {sysState === "ESCALATED" ? (
               <div className="space-y-2">
                 <div className="bg-[#121722] border border-[#1C2230] p-2.5 rounded">
@@ -267,25 +269,25 @@ export default function AfaqEnterpriseSOC() {
         </aside>
 
         {/* --- CENTER WORKSPACE: TACTICAL CAMERA GRID --- */}
-        <section className="flex-1 flex flex-col min-w-0 bg-[#0A0D14] border border-[#1C2230] rounded p-1.5 shadow-inner relative overflow-hidden">
+        <section className="flex-1 w-full flex flex-col min-h-[60vh] lg:min-h-0 bg-[#0A0D14] border border-[#1C2230] rounded p-1.5 shadow-inner relative overflow-hidden">
            
            <div className="absolute inset-0 pointer-events-none opacity-[0.15] z-0">
              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px]" />
            </div>
 
-           <div className={`flex-1 z-10 min-h-0 ${focusedCamIds.length === 0 ? 'grid grid-cols-4 grid-rows-2 gap-1.5' : 'flex flex-col gap-1.5'}`}>
+           <div className={`flex-1 z-10 w-full min-h-0 ${focusedCamIds.length === 0 ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-1.5' : 'flex flex-col gap-1.5'}`}>
               
               {/* --- ESCALATED / FOCUS VIEW --- */}
               {focusedCamIds.length > 0 && (
                 <>
                   {/* Primary Focus Area */}
-                  <div className={`flex-1 grid gap-1.5 grid-cols-1 min-h-0`}>
+                  <div className={`flex-1 grid gap-1.5 grid-cols-1 min-h-[300px] sm:min-h-[400px] lg:min-h-0`}>
                     {focusedCamIds.map(camId => {
                       const cam = ALL_CAMERAS.find(c => c.id === camId);
                       const isThreat = sysState === "ESCALATED" && camId === "CAM-08";
 
                       return (
-                        <motion.div layoutId={`cam-${camId}`} key={`main-${camId}`} className={`relative bg-black border-[2px] ${isThreat ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.15)]' : 'border-[#1C2230]'} rounded overflow-hidden flex flex-col`}>
+                        <motion.div layoutId={`cam-${camId}`} key={`main-${camId}`} className={`relative bg-black border-[2px] ${isThreat ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.15)]' : 'border-[#1C2230]'} rounded overflow-hidden flex flex-col w-full h-full`}>
                            
                            {/* DEDICATED OVERLAY HEADER (Expanded) */}
                            <div className="absolute top-0 inset-x-0 h-[28px] bg-black/50 backdrop-blur flex items-center justify-between px-2 z-30 pointer-events-none border-b border-white/5">
@@ -294,9 +296,9 @@ export default function AfaqEnterpriseSOC() {
                                 <span className="text-[10px] font-bold text-white truncate whitespace-nowrap drop-shadow-md">{cam?.name}</span>
                               </div>
                               <div className="flex items-center justify-end gap-2 shrink-0 pointer-events-auto w-1/2">
-                                {isThreat && <span className="text-[9px] text-red-500 font-bold bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 animate-pulse">REC</span>}
-                                <span className="text-[9px] text-slate-300 font-english bg-black/40 px-1.5 py-0.5 rounded truncate max-w-[80px] hidden sm:block">{cam?.ai}</span>
-                                <span className="text-[9px] font-orbitron text-slate-400 bg-black/40 px-1.5 py-0.5 rounded">{cam?.fps} FPS</span>
+                                {isThreat && <span className="text-[9px] text-red-500 font-bold bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 animate-pulse hidden sm:block">REC</span>}
+                                <span className="text-[9px] text-slate-300 font-english bg-black/40 px-1.5 py-0.5 rounded truncate max-w-[80px] hidden md:block">{cam?.ai}</span>
+                                <span className="text-[9px] font-orbitron text-slate-400 bg-black/40 px-1.5 py-0.5 rounded hidden sm:block">{cam?.fps} FPS</span>
                                 
                                 {/* Audio Toggle Button */}
                                 <button 
@@ -316,7 +318,7 @@ export default function AfaqEnterpriseSOC() {
                               </div>
                            </div>
 
-                           <div className="flex-1 relative bg-black">
+                           <div className="flex-1 relative bg-black w-full h-full">
                              <MediaRenderer cam={cam} isExpanded={true} isMuted={isAudioMuted} />
                              
                              {/* Cinematic Effects (Z-10) */}
@@ -328,18 +330,18 @@ export default function AfaqEnterpriseSOC() {
                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-[0.05]">
                                <div className="w-full h-[1px] bg-white" />
                                <div className="h-full w-[1px] bg-white absolute" />
-                               <div className="w-32 h-32 border border-white rounded-full absolute" />
+                               <div className="w-24 h-24 sm:w-32 sm:h-32 border border-white rounded-full absolute" />
                              </div>
                              
                              {/* Active Threat Overlays (Z-20) */}
                              {isThreat && (
                                <div className="absolute inset-0 pointer-events-none z-20">
-                                 <div className="absolute top-10 right-4 bg-[#0A0D14]/90 backdrop-blur border border-[#1C2230] p-2 rounded shadow-lg">
+                                 <div className="absolute top-10 right-4 bg-[#0A0D14]/90 backdrop-blur border border-[#1C2230] p-2 rounded shadow-lg hidden sm:block">
                                     <div className="text-[12px] font-english font-bold text-red-500 mb-0.5 flex items-center gap-1.5"><Users className="w-3.5 h-3.5"/> DENSITY ANOMALY</div>
                                     <div className="text-[9px] font-orbitron text-slate-300">98.4% AI CONFIDENCE</div>
                                  </div>
                                  <motion.div animate={{ scale: [1, 1.02, 1] }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute top-1/4 left-1/4 w-[50%] h-[50%] border-[2px] border-red-500/80 bg-red-500/10">
-                                   <div className="absolute -bottom-5 right-0 text-[9px] font-english font-bold bg-red-500 text-black px-1.5 py-0.5">MULTI-TARGET TRACKING</div>
+                                   <div className="absolute -bottom-5 right-0 text-[7px] sm:text-[9px] font-english font-bold bg-red-500 text-black px-1.5 py-0.5">MULTI-TARGET TRACKING</div>
                                  </motion.div>
                                </div>
                              )}
@@ -350,9 +352,9 @@ export default function AfaqEnterpriseSOC() {
                   </div>
 
                   {/* Secondary Horizontal Dock */}
-                  <div className="h-[140px] shrink-0 flex gap-1.5 overflow-x-auto scrollbar-hide">
+                  <div className="h-[100px] sm:h-[140px] w-full shrink-0 flex gap-1.5 overflow-x-auto scrollbar-hide">
                     {ALL_CAMERAS.filter(c => !focusedCamIds.includes(c.id)).map(cam => (
-                      <div key={`thumb-${cam.id}`} onClick={() => handleCameraClick(cam.id)} className="w-[200px] shrink-0 bg-black border border-[#1C2230] rounded flex flex-col overflow-hidden cursor-pointer hover:border-blue-500/50 transition-colors relative group">
+                      <div key={`thumb-${cam.id}`} onClick={() => handleCameraClick(cam.id)} className="w-[150px] sm:w-[200px] shrink-0 bg-black border border-[#1C2230] rounded flex flex-col overflow-hidden cursor-pointer hover:border-blue-500/50 transition-colors relative group">
                         
                         {/* Mini Header Overlay */}
                         <div className="absolute top-0 inset-x-0 h-[24px] bg-black/50 backdrop-blur flex items-center px-2 z-20 pointer-events-none border-b border-white/5 opacity-80 group-hover:opacity-100 transition-opacity">
@@ -369,7 +371,7 @@ export default function AfaqEnterpriseSOC() {
                 </>
               )}
 
-              {/* --- NORMAL VIEW (4x2 Grid) --- */}
+              {/* --- NORMAL VIEW (Grid) --- */}
               {focusedCamIds.length === 0 && (
                 <AnimatePresence>
                   {ALL_CAMERAS.map((cam) => {
@@ -379,7 +381,7 @@ export default function AfaqEnterpriseSOC() {
                         layoutId={`cam-${cam.id}`} 
                         key={`grid-${cam.id}`} 
                         onClick={() => handleCameraClick(cam.id)} 
-                        className={`relative flex flex-col bg-black border-[2px] ${isThreat ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'border-[#1C2230]'} rounded overflow-hidden cursor-pointer hover:border-blue-500/40 hover:shadow-[0_0_15px_rgba(96,165,250,0.1)] transition-all group`}
+                        className={`relative flex flex-col min-h-[200px] sm:min-h-[250px] lg:min-h-0 w-full h-full bg-black border-[2px] ${isThreat ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'border-[#1C2230]'} rounded overflow-hidden cursor-pointer hover:border-blue-500/40 hover:shadow-[0_0_15px_rgba(96,165,250,0.1)] transition-all group`}
                       >
                         {/* DEDICATED OVERLAY HEADER (Grid) */}
                         <div className="absolute top-0 inset-x-0 h-[28px] bg-black/50 backdrop-blur flex items-center justify-between px-2 z-30 pointer-events-none border-b border-white/5">
@@ -387,7 +389,7 @@ export default function AfaqEnterpriseSOC() {
                                <span className="text-[7px] font-bold text-white bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1 py-0.5 rounded shrink-0">LIVE</span>
                                <span className="text-[9px] font-bold text-white truncate whitespace-nowrap drop-shadow-md">{cam.name}</span>
                             </div>
-                            <div className="flex items-center justify-end gap-1.5 shrink-0 pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity w-1/3">
+                            <div className="flex items-center justify-end gap-1.5 shrink-0 pointer-events-auto opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity w-1/3">
                                <span className="text-[7px] text-slate-300 font-english bg-black/40 px-1 py-0.5 rounded truncate max-w-[60px] hidden sm:block">{cam.ai}</span>
                                <button 
                                  onClick={(e) => { e.stopPropagation(); handleCameraClick(cam.id); }} 
@@ -399,7 +401,7 @@ export default function AfaqEnterpriseSOC() {
                         </div>
                         
                         {/* Video Render */}
-                        <div className="flex-1 relative bg-black">
+                        <div className="flex-1 relative bg-black w-full h-full">
                             <MediaRenderer cam={cam} isExpanded={false} isMuted={true} />
                             
                             {/* Cinematic Effects */}
@@ -426,7 +428,7 @@ export default function AfaqEnterpriseSOC() {
         </section>
 
         {/* --- RIGHT PANEL: MAP & TIMELINE --- */}
-        <aside className="w-[260px] shrink-0 flex flex-col gap-2.5 min-h-0">
+        <aside className="w-full lg:w-[260px] shrink-0 flex flex-col gap-2.5 h-auto lg:h-full lg:min-h-0">
           
           <Panel title="Tactical Map" action={<span className="text-[8px] text-emerald-400 flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"/> LIVE</span>}>
             <div className="w-full aspect-[4/3] bg-[#0A0D14] border border-[#1C2230] rounded relative overflow-hidden flex items-center justify-center">
@@ -465,7 +467,7 @@ export default function AfaqEnterpriseSOC() {
             )}
           </Panel>
 
-          <Panel title="AI Recording Timeline" className="flex-1" action={<div className="flex items-center gap-1 text-[8px] text-slate-400 cursor-pointer hover:text-slate-200">TODAY</div>}>
+          <Panel title="AI Recording Timeline" className="flex-1 min-h-[250px] lg:min-h-0" action={<div className="flex items-center gap-1 text-[8px] text-slate-400 cursor-pointer hover:text-slate-200">TODAY</div>}>
              <div className="flex-1 overflow-y-auto space-y-3 relative pl-2 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-[#1C2230]">
                 
                 {incidents.map((inc) => (
