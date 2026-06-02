@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ShieldCheck, Map as MapIcon, Activity, Users, 
+  ShieldCheck, Map as MapIcon, Radio, Cpu, Activity, Users, 
   Server, User, Clock, Flame, Target, AlertTriangle, PlayCircle,
   Maximize, Minimize, Monitor, CheckCircle2, VolumeX, Volume2, Expand
 } from "lucide-react";
 
 // ==========================================
-// 1. ENTERPRISE PREPARATION
+// 1. ENTERPRISE SAAS PREPARATION
 // ==========================================
 const SESSION = {
   user: "AALE AL-RASHIDI",
@@ -21,10 +22,13 @@ const SESSION = {
 // 2. LIVE CAMERA ECOSYSTEM
 // ==========================================
 const ALL_CAMERAS = [
+  // TOP ROW
   { id: "CAM-01", name: "محيط الحرم المكي", ai: "Public Live Feed", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/GavTnwpVcNw?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", filter: "contrast(1.05)" },
   { id: "CAM-02", name: "محيط الحرم المدني", ai: "Public Live Feed", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/naaOMgZbIHQ?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", filter: "contrast(1.05)" },
   { id: "CAM-03", name: "تقاطع شيبويا الذكي", ai: "Traffic AI Monitoring", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/dfVK7ld38Ys?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", filter: "contrast(1.1) brightness(0.9)" },
   { id: "CAM-04", name: "البث الإخباري - العربية", ai: "News Monitoring", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", filter: "contrast(1.05)" },
+  
+  // BOTTOM ROW
   { id: "CAM-05", name: "البث الإخباري - تلفزيون سوريا", ai: "Regional Monitoring", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/ZN0aK3V0ds0?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", filter: "contrast(1.05)" },
   { id: "CAM-06", name: "البث الإخباري - قطر", ai: "Strategic Monitoring", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/d020NL_oFAY?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", filter: "contrast(1.1)" },
   { id: "CAM-07", name: "قناة الوثائقية", ai: "Intelligence Feed", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/TiPYdMXt_XI?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", filter: "contrast(1.05)" },
@@ -111,22 +115,25 @@ const CameraTile = ({ cam, sysState }: { cam: any, sysState: string }) => {
       ref={tileRef} 
       className={`relative flex flex-col w-full h-full bg-black border-[2px] ${isThreat ? 'border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.25)]' : 'border-[#1C2230]'} rounded-xl overflow-hidden group transition-colors hover:border-blue-500/40`}
     >
-      {/* Tactical Header Overlay */}
-      <div className="absolute top-0 inset-x-0 h-[42px] bg-gradient-to-b from-black/90 to-transparent flex items-start justify-between px-3 pt-2.5 z-30 pointer-events-none transition-opacity">
-        <div className="flex items-center gap-2.5 overflow-hidden w-2/3">
-          <span className="text-[8px] font-bold text-white bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded shadow-sm shrink-0 tracking-widest">LIVE</span>
-          <span className={`text-[11px] font-bold text-white truncate drop-shadow-md ${isFullscreen ? 'text-[16px]' : ''}`}>{cam.name}</span>
+      {/* Tactical Header Overlay - Responsive Boundaries Fixed */}
+      <div className="absolute top-0 inset-x-0 h-auto min-h-[42px] bg-gradient-to-b from-black/90 to-transparent flex items-start justify-between px-2 sm:px-3 pt-2 sm:pt-2.5 z-40 pointer-events-none transition-opacity">
+        
+        {/* Left Side: Badge & Title */}
+        <div className="flex items-center gap-2 overflow-hidden flex-1 min-w-0 pr-2">
+          <span className="text-[8px] sm:text-[9px] font-bold text-white bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded shadow-sm shrink-0 tracking-widest">LIVE</span>
+          <span className={`text-[10px] sm:text-[11px] font-bold text-white truncate drop-shadow-md ${isFullscreen ? 'text-[14px] sm:text-[16px]' : ''}`}>{cam.name}</span>
         </div>
         
-        <div className="flex items-center justify-end gap-2 shrink-0 pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity w-1/3">
-          {isThreat && <span className="text-[9px] text-white font-bold bg-red-600 px-2 py-0.5 rounded animate-pulse shadow-lg tracking-widest">REC</span>}
+        {/* Right Side: Controls (Always visible on mobile, fade-in on desktop) */}
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0 pointer-events-auto opacity-100 xl:opacity-0 xl:group-hover:opacity-100 transition-opacity">
+          {isThreat && <span className="text-[8px] sm:text-[9px] text-white font-bold bg-red-600 px-1.5 sm:px-2 py-0.5 rounded animate-pulse shadow-lg tracking-widest hidden sm:block">REC</span>}
           
-          <button onClick={toggleAudio} className={`p-1.5 rounded-md transition-all backdrop-blur-md border ${!isMuted ? 'bg-blue-500/20 text-blue-400 border-blue-500/40' : 'bg-black/60 text-slate-300 hover:bg-white/10 border-white/10'}`}>
-            {!isMuted ? <Volume2 className="w-4 h-4"/> : <VolumeX className="w-4 h-4"/>}
+          <button onClick={toggleAudio} className={`p-1.5 sm:p-2 rounded-md transition-all backdrop-blur-md border ${!isMuted ? 'bg-blue-500/20 text-blue-400 border-blue-500/40' : 'bg-black/60 text-slate-300 hover:bg-white/10 border-white/10'}`}>
+            {!isMuted ? <Volume2 className="w-3.5 h-3.5 sm:w-4 h-4"/> : <VolumeX className="w-3.5 h-3.5 sm:w-4 h-4"/>}
           </button>
           
-          <button onClick={toggleFullscreen} className="text-white bg-black/60 hover:bg-blue-500/30 border border-white/10 p-1.5 rounded-md transition-all backdrop-blur-md shadow-lg">
-            {isFullscreen ? <Minimize className="w-4 h-4 text-blue-400"/> : <Expand className="w-4 h-4"/>}
+          <button onClick={toggleFullscreen} className="text-white bg-black/60 hover:bg-blue-500/30 border border-white/10 p-1.5 sm:p-2 rounded-md transition-all backdrop-blur-md shadow-lg">
+            {isFullscreen ? <Minimize className="w-3.5 h-3.5 sm:w-4 h-4 text-blue-400"/> : <Expand className="w-3.5 h-3.5 sm:w-4 h-4"/>}
           </button>
         </div>
       </div>
@@ -325,7 +332,7 @@ export default function AfaqEnterpriseSOC() {
            </div>
            
            <div className="relative z-10 w-full grid grid-cols-4 grid-rows-2 gap-3 h-full">
-              {ALL_CAMERAS.map(cam => <CameraTile key={cam.id} cam={cam} sysState={sysState} />)}
+              {ALL_CAMERAS.map(cam => <CameraTile key={`desktop-${cam.id}`} cam={cam} sysState={sysState} />)}
            </div>
         </section>
 
@@ -389,11 +396,11 @@ export default function AfaqEnterpriseSOC() {
       </div>
 
       {/* ========================================================= */}
-      {/* MOBILE LAYOUT (Strictly completely separated, visible < lg) */}
+      {/* MOBILE LAYOUT (Strictly separated, visible < xl) */}
       {/* ========================================================= */}
       <div className="flex xl:hidden flex-1 w-full flex-col p-3 sm:p-4 gap-4 overflow-y-auto">
         
-        {/* Mobile Central Grid (Stacked feeds) */}
+        {/* Mobile Central Grid (Stacked 16:9 feeds) */}
         <section className="w-full flex flex-col gap-3">
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
               {ALL_CAMERAS.map(cam => (
