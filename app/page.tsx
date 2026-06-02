@@ -23,7 +23,7 @@ const SESSION = {
 // ==========================================
 const ALL_CAMERAS = [
   // TOP ROW
-  { id: "CAM-01", name: "محيط الحرم المكي", ai: "Public Live Feed", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/GavTnwpVcNw?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", filter: "contrast(1.05)" },
+  { id: "CAM-01", name: "TRT1 LIVE - Arabic Translation", ai: "Live Translation", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/6_AnQrbFvY8?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", filter: "contrast(1.05)" },
   { id: "CAM-02", name: "محيط الحرم المدني", ai: "Public Live Feed", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/naaOMgZbIHQ?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", filter: "contrast(1.05)" },
   { id: "CAM-03", name: "تقاطع شيبويا الذكي", ai: "Traffic AI Monitoring", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/dfVK7ld38Ys?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", filter: "contrast(1.1) brightness(0.9)" },
   { id: "CAM-04", name: "البث الإخباري - العربية", ai: "News Monitoring", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", filter: "contrast(1.05)" },
@@ -32,7 +32,8 @@ const ALL_CAMERAS = [
   { id: "CAM-05", name: "البث الإخباري - تلفزيون سوريا", ai: "Regional Monitoring", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/ZN0aK3V0ds0?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", filter: "contrast(1.05)" },
   { id: "CAM-06", name: "البث الإخباري - قطر", ai: "Strategic Monitoring", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/d020NL_oFAY?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", filter: "contrast(1.1)" },
   { id: "CAM-07", name: "قناة الوثائقية", ai: "Intelligence Feed", fps: 30, type: "youtube", url: "https://www.youtube.com/embed/TiPYdMXt_XI?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", filter: "contrast(1.05)" },
-  { id: "CAM-08", name: "التحليل التكتيكي للحشود والمركبات", ai: "Crowd / Traffic AI", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/HpdO5Kq3o7Y?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", filter: "contrast(1.1)" }
+  // تم تحديث CAM-08 واستبداله بالبث الجديد
+  { id: "CAM-08", name: "ATV LIVE - Arabic Translation", ai: "Live Translation", fps: 60, type: "youtube", url: "https://www.youtube.com/embed/82O6yOy_XwE?autoplay=1&mute=1&controls=0&playsinline=1", fallbackUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", filter: "contrast(1.1)" }
 ];
 
 // ==========================================
@@ -68,12 +69,60 @@ const MediaRenderer = ({ cam, isMuted }: { cam: any, isMuted: boolean }) => {
 };
 
 // ==========================================
-// 4. SHARED UI COMPONENTS
+// 4. MOCK AI TRANSLATION ENGINE (TR-AR)
+// ==========================================
+const TranslationEngine = ({ camId, isFullscreen }: { camId: string, isFullscreen: boolean }) => {
+  const [transIdx, setTransIdx] = useState(0);
+
+  // Ready to be replaced with OpenAI Whisper / Gemini API WebSocket streams
+  const MOCK_DATA = [
+    { tr: "Şu anda canlı yayındayız, son gelişmeleri aktarıyoruz.", ar: "نحن في بث مباشر الآن، ننقل لكم آخر التطورات." },
+    { tr: "Bölgedeki güvenlik güçleri önlemlerini artırdı.", ar: "زادت قوات الأمن في المنطقة من إجراءاتها." },
+    { tr: "Olay yerinden en net görüntüleri sizlerle paylaşıyoruz.", ar: "نشارك معكم أوضح الصور من مكان الحدث." },
+    { tr: "Hükümet yetkililerinden kısa süre içinde bir açıklama bekleniyor.", ar: "من المنتظر صدور بيان من المسؤولين الحكوميين قريباً." },
+    { tr: "Trafik akışı ve kalabalık kontrolü sağlanmış durumda.", ar: "تم تأمين تدفق حركة المرور والسيطرة على الحشود." }
+  ];
+
+  useEffect(() => {
+    // Only activate for translation-enabled cameras
+    if (camId !== "CAM-01" && camId !== "CAM-08") return;
+    
+    // Simulate real-time API streaming delay
+    const interval = setInterval(() => {
+      setTransIdx((prev) => (prev + 1) % MOCK_DATA.length);
+    }, 4500);
+    
+    return () => clearInterval(interval);
+  }, [camId]);
+
+  if (camId !== "CAM-01" && camId !== "CAM-08") return null;
+
+  const current = MOCK_DATA[transIdx];
+
+  return (
+    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-8 pb-3 px-4 z-30 pointer-events-none flex flex-col justify-end">
+       <div className="flex flex-col gap-1 border-r-2 border-blue-500 pr-3 text-right w-full">
+          <div className="flex items-center gap-2 justify-end mb-0.5">
+            <span className="flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-1.5 w-1.5 rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
+            </span>
+            <span className="text-[8px] sm:text-[9px] font-english text-blue-400 tracking-widest uppercase">AI LIVE TRANSCRIPT (TR-AR)</span>
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-english text-slate-400 italic drop-shadow-md" dir="ltr">{current.tr}</span>
+          <span className={`font-arabic font-bold text-white drop-shadow-lg transition-all duration-300 ${isFullscreen ? 'text-[18px] sm:text-[22px]' : 'text-[13px] sm:text-[15px]'}`}>{current.ar}</span>
+       </div>
+    </div>
+  );
+};
+
+// ==========================================
+// 5. SHARED UI COMPONENTS
 // ==========================================
 const Panel = ({ title, action = null, children, className = "" }: any) => (
   <div className={`bg-[#0C1017] border border-[#1C2230] rounded-xl flex flex-col shadow-2xl relative overflow-hidden ${className}`}>
     <div className="flex items-center justify-between px-4 py-3 border-b border-[#1C2230] bg-[#0F131C] shrink-0 z-10">
-      <h3 className="text-[11px] font-bold text-slate-200 uppercase tracking-widest font-english">{title}</h3>
+      <h3 className="text-[11px] lg:text-[12px] font-bold text-slate-200 uppercase tracking-widest font-english">{title}</h3>
       {action}
     </div>
     <div className="flex-1 overflow-y-auto p-4 gap-3 flex flex-col scrollbar-hide z-0 relative">
@@ -141,6 +190,10 @@ const CameraTile = ({ cam, sysState }: { cam: any, sysState: string }) => {
       {/* Video Payload */}
       <div className="flex-1 w-full h-full relative">
         <MediaRenderer cam={cam} isMuted={isMuted} />
+        
+        {/* Live Translation Engine */}
+        <TranslationEngine camId={cam.id} isFullscreen={isFullscreen} />
+
         <div className="scanlines absolute inset-0 z-10" />
         <div className="vignette absolute inset-0 z-10" />
         
@@ -158,7 +211,7 @@ const CameraTile = ({ cam, sysState }: { cam: any, sysState: string }) => {
 };
 
 // ==========================================
-// 5. MAIN ARCHITECTURE
+// 6. MAIN ARCHITECTURE
 // ==========================================
 export default function AfaqEnterpriseSOC() {
   const [mounted, setMounted] = useState(false);
@@ -185,7 +238,7 @@ export default function AfaqEnterpriseSOC() {
   };
 
   return (
-    <div dir="rtl" className="min-h-screen w-full bg-[#05070A] text-slate-300 flex flex-col font-arabic overflow-hidden">
+    <div dir="rtl" className="min-h-screen lg:h-screen w-full bg-[#05070A] text-slate-300 flex flex-col font-arabic overflow-hidden">
       
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&display=swap');
@@ -218,8 +271,8 @@ export default function AfaqEnterpriseSOC() {
       `}} />
 
       {/* --- GLOBAL HEADER --- */}
-      <header className="w-full shrink-0 h-[64px] bg-[#0A0D14] border-b border-[#1C2230] px-4 flex items-center justify-between shadow-2xl z-40">
-        <div className="flex items-center gap-4 text-[11px] font-english font-medium">
+      <header className="w-full shrink-0 min-h-[64px] bg-[#0A0D14] border-b border-[#1C2230] px-4 py-3 lg:py-0 flex flex-col lg:flex-row items-center justify-between shadow-2xl z-40 gap-3 lg:gap-0">
+        <div className="flex flex-wrap items-center justify-center gap-4 text-[11px] font-english font-medium w-full lg:w-auto">
           <div className="flex items-center gap-2 text-slate-200 font-orbitron">
             <Clock className="w-4 h-4 text-slate-500" />
             {currentTime.toLocaleTimeString([], { hour12: false })}
@@ -230,15 +283,15 @@ export default function AfaqEnterpriseSOC() {
           </button>
         </div>
 
-        <div className="flex flex-col items-center justify-center absolute left-1/2 -translate-x-1/2">
+        <div className="flex flex-col items-center justify-center order-first lg:order-none lg:absolute lg:left-1/2 lg:-translate-x-1/2 pb-3 lg:pb-0 border-b border-[#1C2230] lg:border-0 w-full lg:w-auto">
           <div className="text-[16px] md:text-[18px] font-orbitron font-bold text-white tracking-[0.25em] flex items-center gap-2 drop-shadow-lg">
             <Server className="w-5 h-5 text-emerald-500" /> AFAQ-AI-SOC
           </div>
           <div className="text-[9px] font-english text-emerald-500/80 tracking-widest uppercase mt-0.5">{SESSION.node}</div>
         </div>
 
-        <div className="hidden md:flex items-center gap-4 text-[11px] font-english font-medium">
-          <div className="flex items-center gap-2 text-emerald-400/90">
+        <div className="flex flex-wrap items-center justify-center gap-4 text-[11px] font-english font-medium w-full lg:w-auto">
+          <div className="hidden sm:flex items-center gap-2 text-emerald-400/90">
             <ShieldCheck className="w-4 h-4" /> SECURE LINK
           </div>
           <div className="flex items-center gap-2.5 bg-black/40 border border-[#1C2230] px-3 py-1.5 rounded-md">
@@ -247,7 +300,7 @@ export default function AfaqEnterpriseSOC() {
               {sysState === 'ESCALATED' ? '01' : '00'}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-slate-300 border-l border-[#1C2230] pl-5">
+          <div className="flex items-center gap-3 text-slate-300 lg:border-l border-[#1C2230] lg:pl-5">
             <div className="flex flex-col leading-tight items-end">
               <span className="text-[11px] font-bold text-white">{SESSION.user}</span>
               <span className="text-[9px] text-blue-400/80">{SESSION.role}</span>
